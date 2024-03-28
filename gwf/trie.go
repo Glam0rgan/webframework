@@ -1,8 +1,19 @@
+package gwf
+
+import (
+	"fmt"
+	"strings"
+)
+
 type node struct {
 	pattern  string
 	part     string
 	children []*node
 	isWild   bool
+}
+
+func (n *node) String() string {
+	return fmt.Sprintf("node{pattern=%s, part=%s, isWild=%t}", n.pattern, n.part, n.isWild)
 }
 
 func (n *node) matchChild(part string) *node {
@@ -58,4 +69,13 @@ func (n *node) search(parts []string, height int) *node {
 	}
 
 	return nil
+}
+
+func (n *node) travel(list *([]*node)) {
+	if n.pattern != "" {
+		*list = append(*list, n)
+	}
+	for _, child := range n.children {
+		child.travel(list)
+	}
 }
